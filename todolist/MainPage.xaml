@@ -9,5 +9,70 @@
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
+        <Popup x:Name="ppup" IsOpen="False" IsLightDismissEnabled="True"  Width="320" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Popup.ChildTransitions>
+                <TransitionCollection>
+                    <PaneThemeTransition Edge="Right" />
+                </TransitionCollection>
+            </Popup.ChildTransitions>
+            <Grid Width="380" Height="{Binding ElementName=flyoutPane, Path=Height}">
+
+                <Grid.Background>
+                    <SolidColorBrush Color="#FFA6A6A6" Opacity="100"/>
+                </Grid.Background>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" Text="New Item" Width="300" Margin="0,12,0,18" Foreground="Black" FontSize="19"/>
+                <TextBox x:Name="titleBox" Grid.Row="1" Header="Title" Width="300" Margin="0,0,0,12" Foreground="Black"
+                         Background="{ThemeResource AppBarBackground}"/>
+                <TextBox x:Name="contentBox" Grid.Row="2" AcceptsReturn="True" TextWrapping="Wrap" Margin="0,0,0,12"
+                         MaxHeight="172" Width="300" Header="Description"
+                         ScrollViewer.VerticalScrollBarVisibility="Auto"
+                         FocusVisualPrimaryBrush="{ThemeResource AppBarBackground}"
+                         Foreground="Black" Background="{ThemeResource AppBarBackground}"/>
+                <DatePicker x:Name="datePicker" Grid.Row="3" Header="Date" Margin="0,0,0,12" Width="300" HorizontalAlignment="Center" Background="{ThemeResource AppBarBackground}" BorderBrush="#FF7A7A7A" FocusVisualPrimaryBrush="White"/>
+                <TimePicker x:Name="timePicker" Grid.Row="4" Header="Time" Margin="0,0,0,18" Width="300" HorizontalAlignment="Center" Background="{ThemeResource AppBarBackground}" BorderBrush="#FF7A7A7A" FocusVisualPrimaryBrush="White"/>
+                <Button x:Name="validButton" Grid.Row="5" Content="Valid" HorizontalAlignment="Center"
+                        VerticalAlignment="Bottom" Click="validButton_Click" Margin="0,0,0,12" Background="{ThemeResource AppBarBackground}" FocusVisualPrimaryBrush="White"/>
+            </Grid>
+        </Popup>
+
+        <Button x:Name="button" Content="Add Item" HorizontalAlignment="Center" Margin="140,0,139,25" VerticalAlignment="Bottom" Click="onAddItemClick"/>
+        <ListView x:Name="todolistView" Height="568" Margin="10,10,10,62" Width="340" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                </Style>
+            </ListView.ItemContainerStyle>
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="local:Item">
+                    <Border BorderBrush="Gray" BorderThickness="0,0,0,1" HorizontalAlignment="Stretch" Width="340">
+                        <Grid Margin="0,12,0,12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="64"/>
+                                <ColumnDefinition Width="64"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Text="{x:Bind Title}" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0"/>
+                            <TextBlock Text="{x:Bind Content}" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1"/>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <Image x:Name="image" HorizontalAlignment="Center" Height="100" Margin="0" Width="100" VerticalAlignment="Center" Source="/Assets/check_list.png"/>
+        <TextBlock x:Name="label1" HorizontalAlignment="Center" Text="You don't have any todo's !" Foreground="#FF7F7F7F" VerticalAlignment="Center" Margin="0,100,0,0"/>
     </Grid>
 </Page>

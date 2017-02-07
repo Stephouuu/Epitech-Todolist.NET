@@ -28,6 +28,13 @@ namespace todolist
             //DateTime = DateTime.Now;
         }
 
+        public TodoItem(string title, string content)
+        {
+            Id = 0;
+            Title = title;
+            Content = content;
+        }
+
 
     }
 }

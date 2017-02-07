@@ -8,31 +8,55 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using Windows.Storage;
+using System.Collections.ObjectModel;
 
 namespace todolist.src
 {
     class MySQLiteHelper
     {
-        public static string Database = "todolist.sqlite";
+        public static string DatabaseName = "todolist.sqlite";
+        private string databasePath;
 
         public void createDatabase()
         {
-            var path = Path.Combine(ApplicationData.Current.LocalFolder.Path, Database);
-            Debug.WriteLine("path database: " + path);
-            if (!File.Exists(path))
+            databasePath = Path.Combine(ApplicationData.Current.LocalFolder.Path, DatabaseName);
+            Debug.WriteLine("path database: " + databasePath);
+            if (!File.Exists(databasePath))
             {
-                SQLiteConnection connection = new SQLiteConnection(new SQLitePlatformWinRT(), path);
-                connection.CreateTable<TodoItem>();
+                using (SQLiteConnection connection = new SQLiteConnection(new SQLitePlatformWinRT(), databasePath))
+                {
+                    connection.CreateTable<TodoItem>();
+                }
             }
         }
 
         public void insert(TodoItem item)
         {
-            SQLiteConnection connection = new SQLiteConnection(new SQLitePlatformWinRT(), Database);
-            connection.RunInTransaction(() =>
+            using (SQLiteConnection connection = new SQLiteConnection(new SQLitePlatformWinRT(), databasePath))
             {
-                connection.Insert(item);
-            });
+                connection.RunInTransaction(() =>
+                {
+                    connection.Insert(item);
+                });
+            }
+        }
+
+        public ObservableCollection<TodoItem> getAllItem()
+        {
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection(new SQLitePlatformWinRT(), databasePath))
+                {
+                    List<TodoItem> list = connection.Table<TodoItem>().ToList();
+                    ObservableCollection<TodoItem> todolist = new ObservableCollection<TodoItem>(list);
+                    return todolist;
+                }
+            }
+            catch
+            {
+                return null;
+            }
+
         }
     }
 }

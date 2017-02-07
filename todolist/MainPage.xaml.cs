@@ -35,12 +35,8 @@ namespace todolist
             this.ppup.Height = 660 / 1.25f;
             this.ppup.Width = Window.Current.Bounds.Width / 2;
 
-            //this.database = new MySQLiteHelper();
             this.database.createDatabase();
-            /*if (this.todolistView.Items.Count == 0)
-            {
-
-            }*/
+            refresh();
         }
 
         private void onAddItemClick(object sender, RoutedEventArgs e)
@@ -56,11 +52,11 @@ namespace todolist
 
             if (string.IsNullOrEmpty(title) || string.IsNullOrWhiteSpace(title))
             {
-                error = "The title can not be empty";
+                error = "The title can not be empty !";
             }
             else if (string.IsNullOrEmpty(content) || string.IsNullOrWhiteSpace(content))
             {
-                error = "The content can not be empty";
+                error = "The content can not be empty !";
             }
 
             if (!string.IsNullOrEmpty(error))
@@ -71,20 +67,24 @@ namespace todolist
             }
             else
             {
+                TodoItem item = new TodoItem(title, content);
+                database.insert(item);
                 this.ppup.IsOpen = false;
+                this.titleBox.Text = "";
+                this.contentBox.Text = "";
+                refresh();
+            }
+        }
+
+        private void refresh()
+        {
+            this.todolistView.ItemsSource = database.getAllItem().OrderByDescending(i => i.Id).ToList();
+            if (this.todolistView.Items.Count != 0)
+            {
+                this.noItem.Visibility = Visibility.Collapsed;
+                this.noItemText.Visibility = Visibility.Collapsed;
             }
         }
     }
 
-    class Item
-    {
-        public string Title { get; set; }
-        public string Content { get; set; }
-
-        public Item(string title, string content)
-        {
-            Title = title;
-            Content = content;
-        }
-    }
 }

@@ -73,6 +73,27 @@ namespace todolist
             }
         }
 
+        protected override void OnActivated(IActivatedEventArgs args)
+        {
+            if (args.Kind == ActivationKind.ToastNotification)
+            {
+                var toastArgs = args as ToastNotificationActivatedEventArgs;
+                var arguments = toastArgs.Argument;
+
+                /*if (arguments == "ARG")
+                {*/
+                    Frame rootFrame = Window.Current.Content as Frame;
+                    if (rootFrame == null)
+                    {
+                        rootFrame = new Frame();
+                        Window.Current.Content = rootFrame;
+                    }
+                    rootFrame.Navigate(typeof(MainPage));
+                    Window.Current.Activate();
+                //}
+            }
+        }
+
         /// <summary>
         /// Appelé lorsque la navigation vers une page donnée échoue
         /// </summary>

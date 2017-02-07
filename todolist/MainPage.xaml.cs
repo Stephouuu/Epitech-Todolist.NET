@@ -16,8 +16,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Windows.UI.Popups;
 using todolist.src;
-
-// Pour plus d'informations sur le modèle d'élément Page vierge, consultez la page http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
+using System.Diagnostics;
 
 namespace todolist
 {
@@ -31,9 +30,6 @@ namespace todolist
             this.InitializeComponent();
             ApplicationView.PreferredLaunchViewSize = new Size(360, 660);
             ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
-
-            this.ppup.Height = 660 / 1.25f;
-            this.ppup.Width = Window.Current.Bounds.Width / 2;
 
             this.database.createDatabase();
             refresh();
@@ -49,6 +45,8 @@ namespace todolist
             string error = "";
             string title = this.titleBox.Text;
             string content = this.contentBox.Text;
+            string date = this.datePicker.Date.ToString("dd/MM/yyyy");
+            string time = timePicker.Time.ToString();
 
             if (string.IsNullOrEmpty(title) || string.IsNullOrWhiteSpace(title))
             {
@@ -67,8 +65,11 @@ namespace todolist
             }
             else
             {
-                TodoItem item = new TodoItem(title, content);
+                TodoItem item = new TodoItem(title, content, date + " " + time, TodoItem.Status.Todo);
                 database.insert(item);
+
+                AlarmManager.addAlarm(DateTime.Parse(date + " " + time), title, content);
+
                 this.ppup.IsOpen = false;
                 this.titleBox.Text = "";
                 this.contentBox.Text = "";
@@ -78,12 +79,29 @@ namespace todolist
 
         private void refresh()
         {
-            this.todolistView.ItemsSource = database.getAllItem().OrderByDescending(i => i.Id).ToList();
+            List<TodoItem> list = database.getAllItem().OrderBy(i => i.dateTime).ToList();
+            foreach (TodoItem item in list) {
+                item.dateTime = TimeZoneInfo.ConvertTime(item.dateTime, TimeZoneInfo.Local);
+                if (item.status == TodoItem.Status.Todo && item.dateTime < DateTime.Now)
+                {
+                    item.status = TodoItem.Status.Overdue;
+                }
+                if (item.status == TodoItem.Status.Todo)
+                {
+                    this.todolistView.Items.Add(item);
+                }
+            }
+
             if (this.todolistView.Items.Count != 0)
             {
                 this.noItem.Visibility = Visibility.Collapsed;
                 this.noItemText.Visibility = Visibility.Collapsed;
             }
+        }
+
+        private void Search_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 

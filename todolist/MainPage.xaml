@@ -14,9 +14,17 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <RelativePanel Grid.Row="0" Padding="12,12,0,12" Background="Transparent">
+        <RelativePanel x:Name="Toolbar" Grid.Row="0" Padding="12,12,0,12" Background="Transparent">
             <TextBlock Text="Todo's List" RelativePanel.AlignVerticalCenterWithPanel="True" RelativePanel.AlignLeftWithPanel="True"  TextWrapping="Wrap" FontSize="19" Foreground="#383838"/>
-            <Button x:Name="AddItem" RelativePanel.AlignRightWithPanel="True" Height="48" Width="48" Margin="0,0,24,0" Click="onAddItemClick">
+
+            <Button x:Name="Search" RelativePanel.AlignRightWithPanel="True" Height="28" Width="28" Margin="0,0,24,0" Click="Search_Click" >
+                <Button.Template>
+                    <ControlTemplate>
+                        <Image Source="/Assets/search.png"/>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+            <Button x:Name="AddItem" RelativePanel.LeftOf="Search" Height="48" Width="48" Margin="0,0,24,0" Click="onAddItemClick">
                 <Button.Template>
                     <ControlTemplate>
                         <Image Source="/Assets/add.png"/>
@@ -26,10 +34,11 @@
         </RelativePanel>
 
         <Grid Grid.Row="1" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-            <Popup x:Name="ppup" IsOpen="False" IsLightDismissEnabled="True"  Width="320" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Popup x:Name="ppup" IsOpen="False" IsLightDismissEnabled="True" HorizontalAlignment="Center"
+                   Width="380">
                 <Popup.ChildTransitions>
                     <TransitionCollection>
-                        <PaneThemeTransition Edge="Right" />
+                        <PaneThemeTransition Edge="Top" />
                     </TransitionCollection>
                 </Popup.ChildTransitions>
                 <Grid Width="380" Height="{Binding ElementName=flyoutPane, Path=Height}">
@@ -47,8 +56,7 @@
                         <RowDefinition/>
                     </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Row="0" Text="New Item" Width="300" Margin="0,12,0,18" Foreground="Black" FontSize="19"
-                               SelectionHighlightColor="LightGray"/>
+                    <TextBlock Grid.Row="0" Text="New Item" Width="300" Margin="0,12,0,18" Foreground="Black" FontSize="19"/>
                     <TextBox x:Name="titleBox" Grid.Row="1" Header="Title" Width="300" Margin="0,0,0,12" Foreground="Black"
                          Background="{ThemeResource AppBarBackground}" SelectionHighlightColor="LightGray"/>
                     <TextBox x:Name="contentBox" Grid.Row="2" AcceptsReturn="True" TextWrapping="Wrap" Margin="0,0,0,12"
@@ -64,7 +72,7 @@
                 </Grid>
             </Popup>
 
-            <ListView x:Name="todolistView" Height="Auto" Margin="12,0,12,0" VerticalAlignment="Center">
+            <ListView x:Name="todolistView" Height="Auto" Margin="12,0,12,0">
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">
                         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
@@ -82,8 +90,8 @@
                                     <RowDefinition/>
                                     <RowDefinition/>
                                 </Grid.RowDefinitions>
-                                <TextBlock Text="{x:Bind Title}" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0"/>
-                                <TextBlock Text="{x:Bind Content}" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1"/>
+                                <TextBlock Text="{x:Bind title}" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0"/>
+                                <TextBlock Text="{x:Bind dateTime}" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1"/>
                             </Grid>
                         </Border>
                     </DataTemplate>

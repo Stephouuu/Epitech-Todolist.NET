@@ -3,36 +3,49 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace todolist
 {
     class TodoItem
     {
+        public enum Status
+        {
+            Overdue = 1,
+            Todo = 2,
+            Done = 4
+        }
+
         [SQLite.Net.Attributes.PrimaryKey, SQLite.Net.Attributes.AutoIncrement]
-        public int Id { get; set; }
+        public int id { get; set; }
 
         [SQLite.Net.Attributes.NotNull]
-        public string Title { set; get; }
+        public string title { set; get; }
 
         [SQLite.Net.Attributes.NotNull]
-        public string Content { set; get; }
+        public string content { set; get; }
 
-        /*[SQLite.Net.Attributes.NotNull]
-        public DateTime DateTime { set; get; }*/
+        [SQLite.Net.Attributes.NotNull]
+        public DateTime dateTime { set; get; }
+
+        [SQLite.Net.Attributes.NotNull]
+        public Status status { set; get; }
 
         public TodoItem()
         {
-            Id = 0;
-            Title = "A Title";
-            Content = "A Content";
-            //DateTime = DateTime.Now;
+            id = 0;
+            title = "A Title";
+            content = "A Content";
+            dateTime = DateTime.Now;
         }
 
-        public TodoItem(string title, string content)
+        public TodoItem(string title, string content, string dateTime, Status status)
         {
-            Id = 0;
-            Title = title;
-            Content = content;
+            id = 0;
+            this.title = title;
+            this.content = content;
+            this.dateTime = DateTime.Parse(dateTime);
+            this.status = status;
         }
 
 

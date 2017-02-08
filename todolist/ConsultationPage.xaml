@@ -17,8 +17,17 @@
         </TransitionCollection>
     </Page.Transitions>
 
-    <StackPanel Orientation="Vertical">
-        <RelativePanel Padding="12,12,0,12">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="54"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <RelativePanel Padding="12,12,0,12" Grid.Row="0">
             <TextBlock x:Name="titleBar" RelativePanel.AlignVerticalCenterWithPanel="True" RelativePanel.AlignLeftWithPanel="True" TextWrapping="Wrap" FontSize="19" Foreground="#383838"/>
             <Button x:Name="DeleteButton" RelativePanel.AlignRightWithPanel="True" Height="24" Width="24" Margin="0,0,20,0" Click="DeleteButton_Click">
                 <Button.Template>
@@ -44,23 +53,45 @@
 
         </RelativePanel>
 
-        <StackPanel Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-            <TextBox x:Name="titleBox" Header="Title" Margin="0,12,0,12" Width="400" HorizontalAlignment="Center" IsEnabled="False"/>
-            <TextBox x:Name="contentBox" AcceptsReturn="True" TextWrapping="Wrap" Margin="0,12,0,22"
-                     MaxHeight="200" Header="Description" Width="400" HorizontalAlignment="Center"
-                     ScrollViewer.VerticalScrollBarVisibility="Auto" IsEnabled="False"
-                     Foreground="Black"/>
+        <RelativePanel Grid.Row="1" HorizontalAlignment="Center">
+            <StackPanel x:Name="InfoPanel" Orientation="Vertical">
+                <TextBox x:Name="titleBox" Header="Title" Margin="0,12,0,12" Width="400"  IsEnabled="False"/>
+                <TextBox x:Name="contentBox" AcceptsReturn="True" TextWrapping="Wrap" Margin="0,12,0,22"
+                     MaxHeight="200" Header="Description" Width="400" ScrollViewer.VerticalScrollBarVisibility="Auto" IsEnabled="False" Foreground="Black"/>
 
-            <DatePicker x:Name="datePicker" Header="Date" Margin="0,0,0,12" Width="400" HorizontalAlignment="Center" IsEnabled="False"/>
-            <TimePicker x:Name="timePicker" Header="Time" Margin="0,0,0,18" Width="400" HorizontalAlignment="Center" IsEnabled="False"/>
+                <DatePicker x:Name="datePicker" Header="Date" Margin="0,0,0,12" Width="400" IsEnabled="False"/>
+                <TimePicker x:Name="timePicker" Header="Time" Margin="0,0,0,18" Width="400" IsEnabled="False"/>
+            </StackPanel>
 
-            <ListView x:Name="filesListView" ItemsSource="{Binding files}" Padding="12,12,0,12" Header="Associated files" IsItemClickEnabled="true" SelectionMode="None" ItemClick="filesListView_ItemClick" >
-                <ListView.ItemTemplate>
-                    <DataTemplate x:DataType="local:AdditionalFile">
-                        <TextBlock x:Name="FileName" Text="{x:Bind name}" />
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-        </StackPanel>
-    </StackPanel>
+            <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" RelativePanel.Below="InfoPanel">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="360"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <ListView x:Name="filesListView" ItemsSource="{Binding files}" Margin="12,12,0,12" Header="Associated files"
+                          IsItemClickEnabled="true" SelectionMode="None" ItemClick="filesListView_ItemClick" RelativePanel.Below="InfoPanel" >
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="HorizontalAlignment" Value="Stretch" />
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="local:AdditionalFile">
+                            <Border BorderBrush="#FFD3D3D3" BorderThickness="0,0,0,1" HorizontalAlignment="Stretch">
+                                <StackPanel Margin="0,12,0,12">
+                                    <TextBlock x:Name="FileName" Text="{x:Bind name}" />
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
+        </RelativePanel>
+        
+    </Grid>
 </Page>

@@ -76,7 +76,7 @@
                 </Grid>
             </Popup>
 
-            <ListView x:Name="todolistView" Height="Auto" Margin="12,0,12,0" ItemClick="todolistView_ItemClick" IsItemClickEnabled="true" SelectionMode="None" >
+            <ListView x:Name="todolistView" Height="Auto" Margin="12,0,12,0" ItemClick="todolistView_ItemClick" IsItemClickEnabled="true" SelectionMode="None">
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">
                         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>

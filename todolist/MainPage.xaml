@@ -1,5 +1,4 @@
-﻿<Page
-    x:Class="todolist.MainPage"
+﻿<Page x:Class="todolist.MainPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:todolist"
@@ -8,14 +7,13 @@
     mc:Ignorable="d">
 
     <Grid x:Name="LayoutRoot" Background="Transparent">
-
         <Grid.RowDefinitions>
             <RowDefinition Height="54"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <RelativePanel x:Name="Toolbar" Grid.Row="0" Padding="12,12,0,12" Background="Transparent">
-            <TextBlock Text="Todo's List" RelativePanel.AlignVerticalCenterWithPanel="True" RelativePanel.AlignLeftWithPanel="True"  TextWrapping="Wrap" FontSize="19" Foreground="#383838"/>
+            <TextBlock Text="Todo's List" RelativePanel.AlignVerticalCenterWithPanel="True" RelativePanel.AlignLeftWithPanel="True" TextWrapping="Wrap" FontSize="19" Foreground="#383838"/>
 
             <Button x:Name="Search" RelativePanel.AlignRightWithPanel="True" Height="28" Width="28" Margin="0,0,24,0" Click="Search_Click" >
                 <Button.Template>
@@ -24,7 +22,14 @@
                     </ControlTemplate>
                 </Button.Template>
             </Button>
-            <Button x:Name="AddItem" RelativePanel.LeftOf="Search" Height="48" Width="48" Margin="0,0,24,0" Click="onAddItemClick">
+            <Button x:Name="Sort" RelativePanel.LeftOf="Search" Height="28" Width="28" Margin="0,0,24,0" Click="Sort_Click">
+                <Button.Template>
+                    <ControlTemplate>
+                        <Image Source="/Assets/sort.png"/>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+            <Button x:Name="AddItem" RelativePanel.LeftOf="Sort" Height="48" Width="48" Margin="0,0,20,0" Click="onAddItemClick">
                 <Button.Template>
                     <ControlTemplate>
                         <Image Source="/Assets/add.png"/>
@@ -42,9 +47,8 @@
                     </TransitionCollection>
                 </Popup.ChildTransitions>
                 <Grid Width="380" Height="{Binding ElementName=flyoutPane, Path=Height}">
-
                     <Grid.Background>
-                        <SolidColorBrush Color="LightGray" Opacity="100"/>
+                        <SolidColorBrush Color="#fff6f6f6" Opacity="100"/>
                     </Grid.Background>
 
                     <Grid.RowDefinitions>
@@ -58,12 +62,12 @@
 
                     <TextBlock Grid.Row="0" Text="New Item" Width="300" Margin="0,12,0,18" Foreground="Black" FontSize="19"/>
                     <TextBox x:Name="titleBox" Grid.Row="1" Header="Title" Width="300" Margin="0,0,0,12" Foreground="Black"
-                         Background="{ThemeResource AppBarBackground}" SelectionHighlightColor="LightGray"/>
+                         Background="{ThemeResource AppBarBackground}" SelectionHighlightColor="#fff6f6f6"/>
                     <TextBox x:Name="contentBox" Grid.Row="2" AcceptsReturn="True" TextWrapping="Wrap" Margin="0,0,0,12"
                          MaxHeight="172" Width="300" Header="Description"
                          ScrollViewer.VerticalScrollBarVisibility="Auto"
                          FocusVisualPrimaryBrush="{ThemeResource AppBarBackground}"
-                         SelectionHighlightColor="LightGray"
+                         SelectionHighlightColor="#fff6f6f6"
                          Foreground="Black" Background="{ThemeResource AppBarBackground}"/>
                     <DatePicker x:Name="datePicker" Grid.Row="3" Header="Date" Margin="0,0,0,12" Width="300" HorizontalAlignment="Center" Background="{ThemeResource AppBarBackground}" BorderBrush="#FF7A7A7A" FocusVisualPrimaryBrush="White"/>
                     <TimePicker x:Name="timePicker" Grid.Row="4" Header="Time" Margin="0,0,0,18" Width="300" HorizontalAlignment="Center" Background="{ThemeResource AppBarBackground}" BorderBrush="#FF7A7A7A" FocusVisualPrimaryBrush="White"/>
@@ -72,7 +76,7 @@
                 </Grid>
             </Popup>
 
-            <ListView x:Name="todolistView" Height="Auto" Margin="12,0,12,0">
+            <ListView x:Name="todolistView" Height="Auto" Margin="12,0,12,0" ItemClick="todolistView_ItemClick" IsItemClickEnabled="true" SelectionMode="None" >
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">
                         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
@@ -80,19 +84,12 @@
                 </ListView.ItemContainerStyle>
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="local:TodoItem">
-                        <Border BorderBrush="Gray" BorderThickness="0,0,0,1" HorizontalAlignment="Stretch">
-                            <Grid Margin="0,12,0,12">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition/>
-                                    <RowDefinition/>
-                                </Grid.RowDefinitions>
-                                <TextBlock Text="{x:Bind title}" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0"/>
-                                <TextBlock Text="{x:Bind dateTime}" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1"/>
-                            </Grid>
+                        <Border BorderBrush="#FFD3D3D3" BorderThickness="0,0,0,1" HorizontalAlignment="Stretch">
+                            <StackPanel Margin="0,12,0,12">
+                                <TextBlock Text="{x:Bind status}" Foreground="{x:Bind color}" Visibility="{x:Bind headerVisibility}" Margin="0,12,0,18" FontWeight="Normal" FontSize="19"/>
+                                <TextBlock Text="{x:Bind title}" SelectionHighlightColor="#000078D7"/>
+                                <TextBlock Text="{x:Bind userFriendlyDateTime}" Foreground="{x:Bind color}" FontStyle="Italic"/>
+                            </StackPanel>
                         </Border>
                     </DataTemplate>
                 </ListView.ItemTemplate>

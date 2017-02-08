@@ -4,16 +4,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using todolist.src;
 
 namespace todolist
 {
     class TodoItem
     {
+        private static string RED = "#FFE50000";
+        private static string GREEN = "#FF009900";
+        private static string BLUE = "#FF3F51B5";
+
         public enum Status
         {
+            None = 0,
             Overdue = 1,
-            Todo = 2,
-            Done = 4
+            Done = 2,
+            Todo = 4
         }
 
         [SQLite.Net.Attributes.PrimaryKey, SQLite.Net.Attributes.AutoIncrement]
@@ -29,23 +35,57 @@ namespace todolist
         public DateTime dateTime { set; get; }
 
         [SQLite.Net.Attributes.NotNull]
-        public Status status { set; get; }
+        public Status status
+        {
+            get
+            {
+                return _status;
+            }
 
+            set
+            {
+                this._status = value;
+                retrieveColor();
+            }
+        }
+
+        [SQLite.Net.Attributes.NotNull]
+        public string color { set; get; }
+
+        [SQLite.Net.Attributes.NotNull]
+        public string files { set; get; }
+
+        public string headerVisibility { set; get; }
+
+        public string userFriendlyDateTime { set; get; }
+
+        private Status _status;
+        
         public TodoItem()
         {
             id = 0;
             title = "A Title";
             content = "A Content";
             dateTime = DateTime.Now;
+            status = Status.Todo;
+            color = BLUE;
+            headerVisibility = "Collapsed";
         }
 
-        public TodoItem(string title, string content, string dateTime, Status status)
+        private void retrieveColor()
         {
-            id = 0;
-            this.title = title;
-            this.content = content;
-            this.dateTime = DateTime.Parse(dateTime);
-            this.status = status;
+            switch (_status)
+            {
+                case Status.Done:
+                    color = GREEN;
+                    break;
+                case Status.Todo:
+                    color = BLUE;
+                    break;
+                case Status.Overdue:
+                    color = RED;
+                    break;
+            }
         }
 
 

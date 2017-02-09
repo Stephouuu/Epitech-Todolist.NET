@@ -16,10 +16,10 @@ namespace todolist
 
         public enum Status
         {
-            None = 0,
-            Overdue = 1,
-            Done = 2,
-            Todo = 4
+            None = -1,
+            Overdue = 0,
+            Done = 1,
+            Todo = 2
         }
 
         [SQLite.Net.Attributes.PrimaryKey, SQLite.Net.Attributes.AutoIncrement]

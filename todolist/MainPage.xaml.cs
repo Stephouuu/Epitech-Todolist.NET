@@ -20,10 +20,16 @@ using System.Diagnostics;
 
 namespace todolist
 {
-    
+
     public sealed partial class MainPage : Page
     {
+        private static int SORT_ASC = 1;
+        private static int SORT_DESC = 2;
+
         private MySQLiteHelper database { get; set; } = new MySQLiteHelper();
+
+        private bool[] filter;
+        private int sortMode;
 
         public MainPage()
         {
@@ -32,11 +38,18 @@ namespace todolist
             ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
 
             this.database.initializeDatabase();
+            filter = new bool[3] { true, true, true };
+            OverdueBox.IsChecked = true;
+            DoneBox.IsChecked = true;
+            TodoBox.IsChecked = true;
+            sortMode = SORT_ASC;
+            SortAsc.IsChecked = true;
             refresh();
         }
 
         private void onAddItemClick(object sender, RoutedEventArgs e)
         {
+            sortppup.IsOpen = false;
             this.ppup.IsOpen = true;
         }
 
@@ -94,7 +107,15 @@ namespace todolist
         {
             this.todolistView.Items.Clear();
             // set sorting order here
-            List<TodoItem> list = database.getAllItem().OrderBy(i => i.dateTime).OrderBy(i => i.status).ToList();
+            List<TodoItem> list;
+            if (sortMode == SORT_ASC)
+            {
+                list = database.getAllItem().OrderBy(i => i.dateTime).OrderBy(i => i.status).ToList();
+            }
+            else
+            {
+                list = database.getAllItem().OrderByDescending(i => i.dateTime).OrderBy(i => i.status).ToList();
+            }
             TodoItem.Status last = TodoItem.Status.None;
             foreach (TodoItem item in list) {
                 item.dateTime = TimeZoneInfo.ConvertTime(item.dateTime, TimeZoneInfo.Local);
@@ -103,14 +124,15 @@ namespace todolist
                     item.status = TodoItem.Status.Overdue;
                     database.updateItem(item);
                 }
-                Debug.WriteLine("title: " + item.title + " status: " + item.status);
-                // check filter here
                 item.userFriendlyDateTime = DateTimeManager.getUserFriendlyDateTime(item.dateTime);
                 if (last != item.status)
                 {
                     item.headerVisibility = "Visible";
                 }
-                this.todolistView.Items.Add(item);
+                if (filter[(int)item.status])
+                {
+                    this.todolistView.Items.Add(item);
+                }
                 last = item.status;
             }
 
@@ -118,6 +140,11 @@ namespace todolist
             {
                 this.noItem.Visibility = Visibility.Collapsed;
                 this.noItemText.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                this.noItem.Visibility = Visibility.Visible;
+                this.noItemText.Visibility = Visibility.Visible;
             }
         }
 
@@ -128,7 +155,7 @@ namespace todolist
 
         private void Sort_Click(object sender, RoutedEventArgs e)
         {
-            // todo
+            sortppup.IsOpen = true;
         }
 
         private void todolistView_ItemClick(object sender, ItemClickEventArgs e)
@@ -137,6 +164,41 @@ namespace todolist
             this.Frame.Navigate(typeof(ConsultationPage), "" + item.id);
         }
 
+        private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            CheckBox[] checkboxes = new CheckBox[] { OverdueBox, DoneBox, TodoBox };
+            for (int i = 0; i < 3; i++)
+            {
+                filter[i] = checkboxes[i].IsChecked == true;
+            }
+            refresh();
+        }
+
+        private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            CheckBox[] checkboxes = new CheckBox[] { OverdueBox, DoneBox, TodoBox };
+            for (int i = 0; i < 3; i++)
+            {
+                filter[i] = checkboxes[i].IsChecked == true;
+            }
+            refresh();
+        }
+
+        private void validFilter_Click(object sender, RoutedEventArgs e)
+        {
+            sortppup.IsOpen = false;
+        }
+
+        private void RadioButton_Checked(object sender, RoutedEventArgs e)
+        {
+            RadioButton r = sender as RadioButton;
+            if (r.Content.Equals("Ascendant"))
+                sortMode = SORT_ASC;
+            else
+                sortMode = SORT_DESC;
+            refresh();
+
+        }
     }
 
 }
